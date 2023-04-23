@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "id": "holidays",
+  "version": "${version}",
+
+  "name": "Holidays",
+  "description": "A special something for a special day.",
+  "authors": [
+    "Illyena"
+  ],
+  "contact": {},
+
+  "license": "Apache-2.0",
+  "icon": "assets/Holidays/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "illyena.gilding.holidays.HolidaysClientInit"
+    ],
+    "main": [
+      "illyena.gilding.holidays.HolidaysInit"
+    ]
+  },
+  "mixins": [
+    "holidays.mixins.json"
+  ],
+
+  "accessWidener": "holidays.accesswidener",
+
+  "depends": {
+    "fabricloader": ">=0.14.19",
+    "fabric": "*",
+    "minecraft": "1.18.2"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}
