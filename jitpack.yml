@@ -1,10 +1,4 @@
 jdk:
   - openjdk17
 before_install:
-  - ./custom_setup.sh
   - ./gradlew clean
-install:
-  - echo "Running a custom install command"
-
-env:
-  MYVAR: "custom environment variable"
