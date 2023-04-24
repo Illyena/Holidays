@@ -103,7 +103,7 @@ public class HolidayMenuScreen extends Screen {
 
         ButtonWidget buttonWidget = new ModButtonWidget(mod, x, y, width, height, text, (button) -> {
             if (mod.isLoaded()) {
-                this.client.setScreen((Screen) Mod.ModScreens.getScreen(mod.getModId(), this.parent));
+                this.client.setScreen((Screen) Mod.ModScreens.getScreen(mod.getModId(), this));
             }
         }, mod.isLoaded() ? ButtonWidget.EMPTY : tooltipSupplier);
 
