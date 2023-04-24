@@ -30,7 +30,7 @@ dependencies {
     }
 
     //Gilding
-    modImplementation "com.github.Illyena:Gilding-core:1.18.2-SNAPSHOT"
+    modImplementation "com.github.Illyena:Gilding-core:1.18.2-dev-SNAPSHOT"
 }
 
 processResources {
