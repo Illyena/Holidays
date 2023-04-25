@@ -3,7 +3,7 @@ package illyena.gilding.holidays.client.gui.screen;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import illyena.gilding.compat.Mod;
-import illyena.gilding.config.option.ConfigOption;
+import illyena.gilding.config.gui.ConfigScreen;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -11,71 +11,52 @@ import net.minecraft.client.gui.CubeMapRenderer;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.RotatingCubeMapRenderer;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ScreenTexts;
-import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.option.Option;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import static illyena.gilding.GildingInit.SUPER_MOD_NAME;
 import static illyena.gilding.GildingInit.VERSION;
 import static illyena.gilding.holidays.HolidaysInit.MOD_ID;
 
 @Environment(EnvType.CLIENT)
-public class HolidaysConfigMenu extends Screen {
+public class HolidaysConfigMenu extends ConfigScreen {
     public static final CubeMapRenderer PANORAMA_CUBE_MAP = new CubeMapRenderer(new Identifier("textures/gui/title/background/panorama"));
     private static final Identifier PANORAMA_OVERLAY = new Identifier("textures/gui/title/background/panorama_overlay.png");
-    private final boolean isMinceraft;
     private final RotatingCubeMapRenderer backgroundRenderer;
 
-    private final Screen parent;
-
-
-    protected HolidaysConfigMenu() {
+    public HolidaysConfigMenu() {
         this(MinecraftClient.getInstance().currentScreen);
     }
 
-    protected HolidaysConfigMenu(Screen parent) {
-        super(new TranslatableText("menu." + MOD_ID + "." + MOD_ID + "_config.title"));
+    public HolidaysConfigMenu(Screen parent) {
+        super(MOD_ID, parent);
         this.backgroundRenderer = new RotatingCubeMapRenderer(PANORAMA_CUBE_MAP);
-        this.isMinceraft = (double)(new Random()).nextFloat() < 1.0E-4;
-        this.parent = parent;
-    }
-
-    public void tick() {  }
-
-    public boolean shouldCloseOnEsc() {
-        return false;
     }
 
     protected void init() {
+        this.initSync();
+
         int l = this.height / 4 + 48;
-
         this.initMultiWidgets();
+        this.initBackWidget(l);
+        this.initReturnWidget(l);
+    }
 
-        this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, l + 72 + 12, 98, 20,
-                ScreenTexts.BACK, (button) -> this.client.setScreen(this.parent)));
-
-        if (this.client.world != null) {
-            this.addDrawableChild(new ButtonWidget(this.width / 2 + 2, l + 72 +12, 98, 20,
-                    new TranslatableText("menu.returnToGame"), button -> this.client.setScreen((null))));
-        } else {
-            this.addDrawableChild(new ButtonWidget(this.width / 2 + 2, l + 72 + 12, 98, 20,
-                    new TranslatableText("gui.toTitle"), (button) -> this.client.setScreen(new TitleScreen())));
+    private void initMultiWidgets() {
+        List<Mod> modsList = Mod.getModsWithSubGroups(MOD_ID);
+        for (Mod mod : modsList) {
+            if (mod.isLoaded()) {
+                this.initMultiWidgets(mod.getModId(), false);
+            }
         }
     }
 
+    /*
     private void initMultiWidgets() {
         int i = 0;
         List<Mod> modsList = Mod.getModsWithSubGroups(MOD_ID);
@@ -103,6 +84,8 @@ public class HolidaysConfigMenu extends Screen {
         }
     }
 
+     */
+
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         float f = 1.0f;
         this.backgroundRenderer.render(delta, MathHelper.clamp(f, 0.0F, 1.0F));
@@ -117,7 +100,7 @@ public class HolidaysConfigMenu extends Screen {
         if ((l & -67108864) != 0) {
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, g);
-            if (this.isMinceraft) {
+            if (this.isMinecraft) {
                 this.drawWithOutline(j, 30, (x, y) -> {
                     this.drawTexture(matrices, x + 0, y, 0, 0, 99, 44);
                     this.drawTexture(matrices, x + 99, y, 129, 0, 27, 44);
