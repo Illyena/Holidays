@@ -7,13 +7,11 @@ import illyena.gilding.config.gui.widget.ModButtonWidget;
 import illyena.gilding.core.util.time.GildingCalendar;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.CubeMapRenderer;
-import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.RotatingCubeMapRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
@@ -33,7 +31,6 @@ import static illyena.gilding.holidays.HolidaysInit.MOD_ID;
 public class HolidayMenuScreen extends Screen {
     public static final CubeMapRenderer PANORAMA_CUBE_MAP = new CubeMapRenderer(new Identifier("textures/gui/title/background/panorama"));
     private static final Identifier PANORAMA_OVERLAY = new Identifier("textures/gui/title/background/panorama_overlay.png");
-    private final boolean isMinceraft;
     private final RotatingCubeMapRenderer backgroundRenderer;
 
     private final Screen parent;
@@ -45,23 +42,15 @@ public class HolidayMenuScreen extends Screen {
     public HolidayMenuScreen(Screen parent) {
         super(new TranslatableText("menu." + MOD_ID + ".title"));
         this.backgroundRenderer = new RotatingCubeMapRenderer(PANORAMA_CUBE_MAP);
-        this.isMinceraft = (double)(new Random()).nextFloat() < 1.0E-4;
         this.parent = parent;
-    }
-
-    public void tick() {  }
-
-    public boolean shouldCloseOnEsc() {
-        return false;
     }
 
     protected void init() {
         int l = this.height / 4 + 48;
 
         this.addDrawableChild(new ButtonWidget( this.width / 2 - 100, this.height / 6 , 200, 20,
-                new TranslatableText("menu." + MOD_ID + "." + MOD_ID + "_config.button"), (button) -> {
-            this.client.setScreen(new HolidaysConfigMenu(this));
-        }));
+                new TranslatableText("menu." + MOD_ID + "." + MOD_ID + "_config.button"),
+                (button) -> this.client.setScreen(new HolidaysConfigMenu(this))));
 
         this.initMultiWidgets();
 
@@ -103,7 +92,7 @@ public class HolidayMenuScreen extends Screen {
 
         ButtonWidget buttonWidget = new ModButtonWidget(mod, x, y, width, height, text, (button) -> {
             if (mod.isLoaded()) {
-                this.client.setScreen((Screen) Mod.ModScreens.getScreen(mod.getModId(), this));
+                this.client.setScreen(Mod.ModScreens.getScreen(mod.getModId(), this));
             }
         }, mod.isLoaded() ? ButtonWidget.EMPTY : tooltipSupplier);
 
@@ -118,40 +107,16 @@ public class HolidayMenuScreen extends Screen {
         RenderSystem.setShaderTexture(0, PANORAMA_OVERLAY);
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0f); //this.doBackgroundFade ? (float)MathHelper.ceil(MathHelper.clamp(f, 0.0F, 1.0F)) : 1.0F);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0f);
         drawTexture(matrices, 0, 0, this.width, this.height, 0.0F, 0.0F, 16, 128, 16, 128);
         float g = 1.0f;
         int l = MathHelper.ceil(g * 255.0F) << 24;
-        if ((l & -67108864) != 0) {
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, g);
-            if (this.isMinceraft) {
-                this.drawWithOutline(j, 30, (x, y) -> {
-                    this.drawTexture(matrices, x + 0, y, 0, 0, 99, 44);
-                    this.drawTexture(matrices, x + 99, y, 129, 0, 27, 44);
-                    this.drawTexture(matrices, x + 99 + 26, y, 126, 0, 3, 44);
-                    this.drawTexture(matrices, x + 99 + 26 + 3, y, 99, 0, 26, 44);
-                    this.drawTexture(matrices, x + 155, y, 0, 45, 155, 44);
-                });
-            } else {
-                this.drawWithOutline(j, 30, (x, y) -> {
-                    this.drawTexture(matrices, x + 0, y, 0, 0, 155, 44);
-                    this.drawTexture(matrices, x + 155, y, 0, 45, 155, 44);
-                });
-            }
 
-            drawTexture(matrices, j + 88, 67, 0.0F, 0.0F, 98, 14, 128, 16);
-            drawCenteredText(matrices, this.textRenderer, new LiteralText("HAPPY " + GildingCalendar.checkHolidays().name() + "!"), this.width / 2, this.height / 8, Color.CYAN.getRGB());
-            int m = this.textRenderer.getWidth(GildingCalendar.getDateLong()) / 2;
-            drawStringWithShadow(matrices, this.textRenderer, GildingCalendar.getDateLong(), this.width / 2 - m, this.height - 10, 16777215 | l);
+        drawTexture(matrices, j + 88, 67, 0.0F, 0.0F, 98, 14, 128, 16);
+        drawCenteredText(matrices, this.textRenderer, new LiteralText("HAPPY " + GildingCalendar.checkHolidays().name() + "!"), this.width / 2, this.height / 8, Color.CYAN.getRGB());
+        int m = this.textRenderer.getWidth(GildingCalendar.getDateLong()) / 2;
+        drawStringWithShadow(matrices, this.textRenderer, GildingCalendar.getDateLong(), this.width / 2 - m, this.height - 10, 16777215 | l);
 
-            for (Element element : this.children()) {
-                if (element instanceof ClickableWidget) {
-                    ((ClickableWidget) element).setAlpha(g);
-                }
-            }
-
-            super.render(matrices, mouseX, mouseY, delta);
-        }
+        super.render(matrices, mouseX, mouseY, delta);
     }
 }

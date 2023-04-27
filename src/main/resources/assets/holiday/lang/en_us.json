@@ -1,7 +1,7 @@
 {
   "menu.holidays.title": "Holiday Mods",
-  "menu.holidays.holiday_config.button": "Holiday Configuration",
-  "menu.holidays.holiday_config.title": "Holiday Configuration",
+  "menu.holidays.holidays_config.button": "Holiday Configuration",
+  "menu.holidays.holidays_config.title": "Holiday Configuration",
   "menu.holidays.birthday_config.button": "Birthday Configuration",
   "menu.holidays.easter_config.button": "Easter Configuration",
 
