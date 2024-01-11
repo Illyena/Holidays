@@ -17,4 +17,5 @@ public class HolidaysClientInit implements ClientModInitializer {
     public void onInitializeClient() {
 
     }
+
 }

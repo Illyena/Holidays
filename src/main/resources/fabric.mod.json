@@ -8,10 +8,13 @@
   "authors": [
     "Illyena"
   ],
-  "contact": {},
+  "contact": {
+    "sources": "https://github.com/Illyena/Holidays.git",
+    "issues": "https://github.com/Illyena/Holidays/issues"
+  },
 
   "license": "Apache-2.0",
-  "icon": "assets/Holidays/icon.png",
+  "icon": "cake.png",
 
   "environment": "*",
   "entrypoints": {
@@ -20,20 +23,36 @@
     ],
     "main": [
       "illyena.gilding.holidays.HolidaysInit"
+    ],
+    "modmenu": [
+      "illyena.gilding.holidays.compat.ModMenuCompat"
+    ],
+    "config": [
+      "illyena.gilding.holidays.config.HolidaysConfigOptions"
     ]
   },
   "mixins": [
     "holidays.mixins.json"
   ],
-
   "accessWidener": "holidays.accesswidener",
 
   "depends": {
-    "fabricloader": ">=0.14.19",
+    "fabricloader": ">=${loader_version}",
     "fabric": "*",
-    "minecraft": "1.18.2"
+    "minecraft": "~${minecraft_version}",
+    "java": ">=17",
+    "gilding": ">=${gilding_version}"
   },
   "suggests": {
     "another-mod": "*"
+  },
+
+  "custom": {
+    "modmenu": {
+      "links": {},
+      "badges": [
+        "library"
+      ]
+    }
   }
 }
